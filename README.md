@@ -24,7 +24,12 @@
 
 ## Architecture
 
-このプロジェクトはClean Architectureの原則に基づいて設計されています。詳細は[アーキテクチャドキュメント](architecture.md)をご覧ください。
+このプロジェクトはClean Architectureの原則に基づいて設計されています。詳細は[アーキテクチャドキュメント](docs/architecture.md)をご覧ください。
+
+## DB設計
+
+- データベース設計の詳細は[DBドキュメント](docs/db.md)をご覧ください。
+- MermaidでER図も記載しています。[ER図](docs/mermaid.md#er図)
 
 ## セットアップ
 
