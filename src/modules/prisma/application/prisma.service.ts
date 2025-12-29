@@ -45,6 +45,16 @@ export class PrismaService
 
   async onModuleDestroy(): Promise<void> {
     try {
+      await this.$disconnect();
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      Logger.error(
+        `Prismaクライアントの切断中にエラーが発生しました: ${errorMessage}`
+      );
+    }
+
+    try {
       await this.pool.end();
     } catch (error: unknown) {
       const errorMessage =

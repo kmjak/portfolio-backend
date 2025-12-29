@@ -55,14 +55,9 @@ describe("PrismaService", () => {
     it("should throw error if DATABASE_URL is not defined", () => {
       jest.spyOn(configService, "get").mockReturnValue(null);
 
-      try {
-        new PrismaService(configService);
-      } catch (error: unknown) {
-        expect(error).toBeInstanceOf(Error);
-        expect((error as Error).message).toBe(
-          "DATABASE_URLが設定されていません。"
-        );
-      }
+      expect(() => new PrismaService(configService)).toThrow(
+        "DATABASE_URLが設定されていません。"
+      );
     });
 
     it("should initialize with valid DATABASE_URL", () => {
@@ -80,11 +75,24 @@ describe("PrismaService", () => {
       const loggerSpy = jest
         .spyOn(Logger, "error")
         .mockImplementation(() => {});
+
+      const pgMock = jest.requireMock("pg") as unknown as { Pool: jest.Mock };
+      pgMock.Pool.mockImplementationOnce(() => {
+        throw new Error("Pool creation failed");
+      });
+
       const mockConfigService = {
-        get: jest.fn().mockReturnValue("invalid-connection-string"),
+        get: jest
+          .fn()
+          .mockReturnValue("postgresql://test:test@localhost:5432/test_db"),
       } as unknown as ConfigService;
 
-      new PrismaService(mockConfigService);
+      expect(() => new PrismaService(mockConfigService)).toThrow(
+        "Pool creation failed"
+      );
+      expect(loggerSpy).toHaveBeenCalledWith(
+        expect.stringContaining("PrismaServiceの初期化中にエラーが発生しました")
+      );
 
       loggerSpy.mockRestore();
     });
@@ -110,9 +118,52 @@ describe("PrismaService", () => {
   });
 
   describe("onModuleDestroy", () => {
-    it("should end the pool", async () => {
+    it("should disconnect Prisma client and end the pool", async () => {
+      const disconnectSpy = jest
+        .spyOn(service, "$disconnect")
+        .mockResolvedValue(undefined);
+
       await service.onModuleDestroy();
+
+      expect(disconnectSpy).toHaveBeenCalled();
       expect(mockPoolEnd).toHaveBeenCalled();
+    });
+
+    it("should log error when Prisma disconnect fails but continue with pool close", async () => {
+      const disconnectErrorMessage = "Disconnect failed";
+      jest
+        .spyOn(service, "$disconnect")
+        .mockRejectedValue(new Error(disconnectErrorMessage));
+
+      const loggerSpy = jest
+        .spyOn(Logger, "error")
+        .mockImplementation(() => {});
+
+      await expect(service.onModuleDestroy()).resolves.toBeUndefined();
+
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Prismaクライアントの切断中にエラーが発生しました: ${disconnectErrorMessage}`
+      );
+      expect(mockPoolEnd).toHaveBeenCalled();
+
+      loggerSpy.mockRestore();
+    });
+
+    it("should log error when string error occurs during Prisma disconnect", async () => {
+      const errorMessage = "String disconnect error";
+      jest.spyOn(service, "$disconnect").mockRejectedValue(errorMessage);
+
+      const loggerSpy = jest
+        .spyOn(Logger, "error")
+        .mockImplementation(() => {});
+
+      await expect(service.onModuleDestroy()).resolves.toBeUndefined();
+
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Prismaクライアントの切断中にエラーが発生しました: ${errorMessage}`
+      );
+
+      loggerSpy.mockRestore();
     });
 
     it("should log error when pool close fails but not throw", async () => {
@@ -144,6 +195,31 @@ describe("PrismaService", () => {
 
       expect(loggerSpy).toHaveBeenCalledWith(
         `Poolのクローズ中にエラーが発生しました: ${errorMessage}`
+      );
+
+      loggerSpy.mockRestore();
+    });
+
+    it("should handle both Prisma disconnect and pool close errors independently", async () => {
+      const disconnectError = "Disconnect failed";
+      const poolError = "Pool close failed";
+
+      jest
+        .spyOn(service, "$disconnect")
+        .mockRejectedValue(new Error(disconnectError));
+      mockPoolEnd.mockRejectedValue(new Error(poolError));
+
+      const loggerSpy = jest
+        .spyOn(Logger, "error")
+        .mockImplementation(() => {});
+
+      await expect(service.onModuleDestroy()).resolves.toBeUndefined();
+
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Prismaクライアントの切断中にエラーが発生しました: ${disconnectError}`
+      );
+      expect(loggerSpy).toHaveBeenCalledWith(
+        `Poolのクローズ中にエラーが発生しました: ${poolError}`
       );
 
       loggerSpy.mockRestore();
