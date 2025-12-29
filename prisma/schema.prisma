@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Background {
+  id          String   @id
+  title       String
+  description String?
+  eventDate   DateTime @map("event_date") @db.Date
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("backgrounds")
+}
+
+model Achievement {
+  id          String   @id
+  title       String
+  result      String
+  description String?
+  achievedAt  DateTime @map("achieved_at") @db.Date
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  categories AchievementCategoryMap[]
+
+  @@map("achievements")
+}
+
+model AchievementCategory {
+  id   String @id
+  name String @unique
+
+  achievements AchievementCategoryMap[]
+
+  @@map("achievement_categories")
+}
+
+model AchievementCategoryMap {
+  achievementId String @map("achievement_id")
+  categoryId    String @map("category_id")
+
+  achievement Achievement         @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  category    AchievementCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([achievementId, categoryId])
+  @@map("achievement_category_maps")
+}
+
+model Skill {
+  id          String   @id
+  name        String
+  level       Int      @db.SmallInt
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  projects   ProjectSkillMap[]
+  categories SkillTechCategoryMap[]
+
+  @@map("skills")
+}
+
+model TechCategory {
+  id   String @id
+  name String @unique
+
+  skills SkillTechCategoryMap[]
+
+  @@map("tech_categories")
+}
+
+model SkillTechCategoryMap {
+  skillId    String @map("skill_id")
+  categoryId String @map("category_id")
+
+  skill    Skill        @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  category TechCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([skillId, categoryId])
+  @@map("skill_tech_category_maps")
+}
+
+model Project {
+  id           String  @id
+  title        String
+  description  String
+  thumbnailUrl String? @map("thumbnail_url")
+  repoUrl      String? @map("repo_url")
+  demoUrl      String? @map("demo_url")
+  isFeatured   Boolean @default(false) @map("is_featured")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  skills ProjectSkillMap[]
+  detail ProjectDetail?
+
+  @@map("projects")
+}
+
+model ProjectSkillMap {
+  projectId String @map("project_id")
+  skillId   String @map("skill_id")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, skillId])
+  @@map("project_skill_maps")
+}
+
+model ProjectDetail {
+  projectId  String   @id @map("project_id")
+  background String
+  keyPoints  String   @map("key_points")
+  challenges String
+  solutions  String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_details")
+}

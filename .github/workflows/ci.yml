@@ -11,6 +11,8 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
@@ -21,10 +23,13 @@ jobs:
           node-version: "20"
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
+      - run: pnpm prisma generate
       - run: pnpm lint
 
   format:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test_db"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
@@ -35,4 +40,5 @@ jobs:
           node-version: "20"
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
+      - run: pnpm prisma generate
       - run: pnpm prettier --check "src/**/*.ts" "test/**/*.ts"
