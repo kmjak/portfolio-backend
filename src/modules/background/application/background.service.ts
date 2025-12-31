@@ -51,6 +51,11 @@ export class BackgroundService {
         throw error;
       }
 
+      if (error instanceof Error && error.name === "BadRequestException") {
+        this.logger.warn(`Invalid ID format: ${id}`);
+        throw error;
+      }
+
       const message = `Failed to retrieve background with id ${id}`;
       this.logger.error(
         `${message}: ${error instanceof Error ? error.stack : undefined}`

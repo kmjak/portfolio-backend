@@ -31,9 +31,7 @@ export class BackgroundController {
     description: "経歴詳細",
     type: BackgroundResponseDto,
   })
-  async findById(
-    @Param("id") id: string
-  ): Promise<BackgroundResponseDto | null> {
+  async findById(@Param("id") id: string): Promise<BackgroundResponseDto> {
     const background = await this.backgroundService.findById(id);
 
     return BackgroundMapper.toFormat(background);

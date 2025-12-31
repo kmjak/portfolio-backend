@@ -35,9 +35,14 @@ export class BackgroundRepository implements IBackgroundRepository {
   /**
    * 全経歴取得
    * @returns 経歴Entity配列
+   * TODO: orderByの追加は将来要件が固まってから対応する（YAGNI 原則に従い現時点では実装しない）
    */
   async findAll(): Promise<Background[]> {
-    const backgrounds = await this.prismaService.background.findMany();
+    const backgrounds = await this.prismaService.background.findMany({
+      orderBy: {
+        eventDate: "desc",
+      },
+    });
 
     return backgrounds.map((background) => this.toEntity(background));
   }

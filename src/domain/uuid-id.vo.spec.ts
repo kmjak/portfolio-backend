@@ -15,18 +15,18 @@ describe("UuidIdVo", () => {
         BadRequestException
       );
       expect(() => UuidIdVo.create(123 as unknown as string)).toThrow(
-        "User ID must be a string"
+        "UUID must be a string"
       );
     });
 
     it("should throw BadRequestException if value is empty", () => {
       expect(() => UuidIdVo.create("")).toThrow(BadRequestException);
-      expect(() => UuidIdVo.create("")).toThrow("User ID cannot be empty");
+      expect(() => UuidIdVo.create("")).toThrow("UUID cannot be empty");
     });
 
     it("should throw BadRequestException if value is empty (whitespace)", () => {
       expect(() => UuidIdVo.create("   ")).toThrow(BadRequestException);
-      expect(() => UuidIdVo.create("   ")).toThrow("User ID cannot be empty");
+      expect(() => UuidIdVo.create("   ")).toThrow("UUID cannot be empty");
     });
 
     it("should throw BadRequestException if value is invalid UUID", () => {

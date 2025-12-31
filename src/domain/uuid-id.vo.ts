@@ -1,18 +1,18 @@
 import { BadRequestException } from "@nestjs/common";
 
 /**
- * ユーザーID用のValue Object
+ * UUID用のValue Object
  */
 export class UuidIdVo {
   private constructor(private readonly value: string) {}
 
   private static validate(value: string): void {
     if (typeof value !== "string") {
-      throw new BadRequestException("User ID must be a string");
+      throw new BadRequestException("UUID must be a string");
     }
 
     if (value.trim().length === 0) {
-      throw new BadRequestException("User ID cannot be empty");
+      throw new BadRequestException("UUID cannot be empty");
     }
 
     const uuidV4Regex =

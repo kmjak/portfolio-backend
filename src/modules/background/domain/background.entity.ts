@@ -21,7 +21,7 @@ export class Background {
    * @param description
    * @param eventDate
    * @param createdAt
-   * @returns
+   * @returns Background Entity
    */
   static reconstruct(
     id: UuidIdVo,

@@ -8,7 +8,7 @@ export class BackgroundEventDateVo {
   /**
    * イベントの日付用のValue Object生成
    * @param value
-   * @returns
+   * @returns BackgroundEventDateVoのインスタンス
    */
   static create(value: Date): BackgroundEventDateVo {
     return new BackgroundEventDateVo(value);

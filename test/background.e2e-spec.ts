@@ -51,20 +51,32 @@ describe("BackgroundE2E (e2e)", () => {
         },
       });
 
-      return request(app.getHttpServer() as unknown as App)
-        .get(`/backgrounds/${background.id}`)
-        .expect(200)
-        .expect((res) => {
-          const body = res.body as { id: string; title: string };
-          expect(body.id).toBe(background.id);
-          expect(body.title).toBe(background.title);
+      try {
+        await request(app.getHttpServer() as unknown as App)
+          .get(`/backgrounds/${background.id}`)
+          .expect(200)
+          .expect((res) => {
+            const body = res.body as { id: string; title: string };
+            expect(body.id).toBe(background.id);
+            expect(body.title).toBe(background.title);
+          });
+      } finally {
+        await prismaService.background.delete({
+          where: { id: background.id },
         });
+      }
     });
 
     it("should return 404 for non-existent ID", () => {
       return request(app.getHttpServer() as unknown as App)
         .get("/backgrounds/00000000-0000-0000-0000-000000000000")
         .expect(404);
+    });
+
+    it("should return 400 for invalid UUID format", () => {
+      return request(app.getHttpServer() as unknown as App)
+        .get("/backgrounds/invalid-uuid")
+        .expect(400);
     });
   });
 });
