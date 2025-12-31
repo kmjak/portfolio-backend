@@ -2,6 +2,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  BadRequestException,
 } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 
@@ -119,6 +120,20 @@ describe("BackgroundService", () => {
         InternalServerErrorException
       );
 
+      loggerSpy.mockRestore();
+    });
+
+    it("should re-throw BadRequestException for invalid id format", async () => {
+      const invalidId = "invalid-uuid";
+      const loggerSpy = jest
+        .spyOn(Logger.prototype, "warn")
+        .mockImplementation();
+
+      await expect(service.findById(invalidId)).rejects.toThrow(
+        BadRequestException
+      );
+
+      expect(loggerSpy).toHaveBeenCalled();
       loggerSpy.mockRestore();
     });
   });
