@@ -26,7 +26,6 @@ model Background {
 model Achievement {
   id          String   @id
   title       String
-  result      String
   description String?
   achievedAt  DateTime @map("achieved_at") @db.Date
   createdAt   DateTime @default(now()) @map("created_at")
