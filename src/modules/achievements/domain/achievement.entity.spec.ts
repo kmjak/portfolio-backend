@@ -32,12 +32,7 @@ describe("Achievement", () => {
     });
 
     it("should allow null description", () => {
-      const achievement = Achievement.create(
-        testId,
-        testTitle,
-        null,
-        testDate
-      );
+      const achievement = Achievement.create(testId, testTitle, null, testDate);
 
       expect(achievement.description).toBeNull();
     });

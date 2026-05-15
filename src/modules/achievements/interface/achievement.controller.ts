@@ -33,7 +33,7 @@ export class AchievementController {
     description: "最新の実績",
   })
   async findLatestWithCount(
-    @Query("count") count: number
+    @Query("limit") count: number
   ): Promise<AchievementResponseDto[]> {
     const achievements =
       await this.achievementService.findLatestWithCount(count);
