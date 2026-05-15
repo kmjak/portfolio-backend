@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Logger, Param } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { BackgroundService } from "../application/background.service";
@@ -9,6 +9,8 @@ import { BackgroundResponseDto } from "./dto/background-response.dto";
 @ApiTags("backgrounds")
 @Controller("backgrounds")
 export class BackgroundController {
+  logger = new Logger(BackgroundController.name);
+
   constructor(private readonly backgroundService: BackgroundService) {}
 
   @Get()
@@ -20,6 +22,8 @@ export class BackgroundController {
   })
   async findAll(): Promise<BackgroundResponseDto[]> {
     const backgrounds = await this.backgroundService.findAll();
+
+    this.logger.log(`Retrieved ${backgrounds.length} backgrounds.`);
 
     return BackgroundMapper.toFormats(backgrounds);
   }
@@ -33,6 +37,8 @@ export class BackgroundController {
   })
   async findById(@Param("id") id: string): Promise<BackgroundResponseDto> {
     const background = await this.backgroundService.findById(id);
+
+    this.logger.log(`Retrieved background with ID ${id}.`);
 
     return BackgroundMapper.toFormat(background);
   }

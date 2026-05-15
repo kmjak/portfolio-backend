@@ -14,7 +14,6 @@ export class BackgroundMapper {
       title: entity.title.getValue(),
       description: entity.description ? entity.description.getValue() : null,
       eventDate: entity.eventDate.getValue(),
-      createdAt: entity.createdAt.getValue(),
     };
   }
 

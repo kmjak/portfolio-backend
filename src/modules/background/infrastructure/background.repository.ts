@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
 import { BackgroundModel } from "generated/prisma/models";
-import { TimestampVo } from "src/domain/timestamp.vo";
 import { UuidIdVo } from "src/domain/uuid-id.vo";
 import { PrismaService } from "src/modules/prisma/application/prisma.service";
 
@@ -27,8 +26,7 @@ export class BackgroundRepository implements IBackgroundRepository {
       backgroundData.description
         ? BackgroundDescriptionVo.create(backgroundData.description)
         : null,
-      BackgroundEventDateVo.create(backgroundData.eventDate),
-      TimestampVo.create(backgroundData.createdAt)
+      BackgroundEventDateVo.create(backgroundData.eventDate)
     );
   }
 

@@ -1,12 +1,11 @@
 import {
+  BadRequestException,
   InternalServerErrorException,
   Logger,
   NotFoundException,
-  BadRequestException,
 } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 
-import { TimestampVo } from "src/domain/timestamp.vo";
 import { UuidIdVo } from "src/domain/uuid-id.vo";
 
 import { BackgroundDescriptionVo } from "../domain/background-description.vo";
@@ -31,8 +30,7 @@ describe("BackgroundService", () => {
     mockId,
     BackgroundTitleVo.create("Test Title"),
     BackgroundDescriptionVo.create("Test Description"),
-    BackgroundEventDateVo.create(new Date()),
-    TimestampVo.create(new Date())
+    BackgroundEventDateVo.create(new Date())
   );
 
   beforeEach(async () => {

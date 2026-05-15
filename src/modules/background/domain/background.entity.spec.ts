@@ -1,4 +1,3 @@
-import { TimestampVo } from "src/domain/timestamp.vo";
 import { UuidIdVo } from "src/domain/uuid-id.vo";
 
 import { BackgroundDescriptionVo } from "./background-description.vo";
@@ -16,7 +15,6 @@ describe("Background Entity", () => {
   const title = BackgroundTitleVo.create(titleStr);
   const description = BackgroundDescriptionVo.create(descStr);
   const eventDate = BackgroundEventDateVo.create(now);
-  const createdAt = TimestampVo.create(now);
 
   describe("reconstruct", () => {
     it("should reconstruct an existing background", () => {
@@ -24,8 +22,7 @@ describe("Background Entity", () => {
         id,
         title,
         description,
-        eventDate,
-        createdAt
+        eventDate
       );
 
       expect(background).toBeInstanceOf(Background);
@@ -33,17 +30,10 @@ describe("Background Entity", () => {
       expect(background.title.getValue()).toBe(titleStr);
       expect(background.description?.getValue()).toBe(descStr);
       expect(background.eventDate.getValue()).toBe(now);
-      expect(background.createdAt.getValue()).toBe(now);
     });
 
     it("should reconstruct with null description", () => {
-      const background = Background.reconstruct(
-        id,
-        title,
-        null,
-        eventDate,
-        createdAt
-      );
+      const background = Background.reconstruct(id, title, null, eventDate);
 
       expect(background.description).toBeNull();
     });

@@ -3,14 +3,14 @@ import { randomUUID } from "crypto";
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 
-import * as request from "supertest";
-import { App } from "supertest/types";
+import type { Express } from "express";
+import request from "supertest";
 
 import { AppModule } from "../src/modules/app.module";
 import { PrismaService } from "../src/modules/prisma/application/prisma.service";
 
 describe("BackgroundE2E (e2e)", () => {
-  let app: INestApplication;
+  let app: INestApplication<Express>;
   let prismaService: PrismaService;
 
   beforeAll(async () => {
@@ -30,7 +30,7 @@ describe("BackgroundE2E (e2e)", () => {
 
   describe("GET /backgrounds", () => {
     it("should return 200 and an array of backgrounds", () => {
-      return request(app.getHttpServer() as unknown as App)
+      return request(app.getHttpServer())
         .get("/backgrounds")
         .expect(200)
         .expect((res) => {
@@ -52,7 +52,7 @@ describe("BackgroundE2E (e2e)", () => {
       });
 
       try {
-        await request(app.getHttpServer() as unknown as App)
+        await request(app.getHttpServer())
           .get(`/backgrounds/${background.id}`)
           .expect(200)
           .expect((res) => {
@@ -68,13 +68,13 @@ describe("BackgroundE2E (e2e)", () => {
     });
 
     it("should return 404 for non-existent ID", () => {
-      return request(app.getHttpServer() as unknown as App)
+      return request(app.getHttpServer())
         .get("/backgrounds/00000000-0000-0000-0000-000000000000")
         .expect(404);
     });
 
     it("should return 400 for invalid UUID format", () => {
-      return request(app.getHttpServer() as unknown as App)
+      return request(app.getHttpServer())
         .get("/backgrounds/invalid-uuid")
         .expect(400);
     });

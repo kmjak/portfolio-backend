@@ -1,4 +1,3 @@
-import { TimestampVo } from "src/domain/timestamp.vo";
 import { UuidIdVo } from "src/domain/uuid-id.vo";
 
 import { BackgroundDescriptionVo } from "./background-description.vo";
@@ -10,8 +9,7 @@ export class Background {
     public readonly id: UuidIdVo,
     public readonly title: BackgroundTitleVo,
     public readonly description: BackgroundDescriptionVo | null,
-    public readonly eventDate: BackgroundEventDateVo,
-    public readonly createdAt: TimestampVo
+    public readonly eventDate: BackgroundEventDateVo
   ) {}
 
   /**
@@ -27,9 +25,8 @@ export class Background {
     id: UuidIdVo,
     title: BackgroundTitleVo,
     description: BackgroundDescriptionVo | null,
-    eventDate: BackgroundEventDateVo,
-    createdAt: TimestampVo
+    eventDate: BackgroundEventDateVo
   ): Background {
-    return new Background(id, title, description, eventDate, createdAt);
+    return new Background(id, title, description, eventDate);
   }
 }

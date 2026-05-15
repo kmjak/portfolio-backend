@@ -1,4 +1,3 @@
-import { TimestampVo } from "src/domain/timestamp.vo";
 import { UuidIdVo } from "src/domain/uuid-id.vo";
 
 import { BackgroundDescriptionVo } from "../domain/background-description.vo";
@@ -18,8 +17,7 @@ describe("BackgroundMapper", () => {
     UuidIdVo.create(idStr),
     BackgroundTitleVo.create(titleStr),
     BackgroundDescriptionVo.create(descStr),
-    BackgroundEventDateVo.create(now),
-    TimestampVo.create(now)
+    BackgroundEventDateVo.create(now)
   );
 
   describe("toFormat", () => {
@@ -31,7 +29,6 @@ describe("BackgroundMapper", () => {
       expect(dto.title).toBe(titleStr);
       expect(dto.description).toBe(descStr);
       expect(dto.eventDate).toBe(now);
-      expect(dto.createdAt).toBe(now);
     });
 
     it("should handle null description", () => {
@@ -39,8 +36,7 @@ describe("BackgroundMapper", () => {
         UuidIdVo.create(idStr),
         BackgroundTitleVo.create(titleStr),
         null,
-        BackgroundEventDateVo.create(now),
-        TimestampVo.create(now)
+        BackgroundEventDateVo.create(now)
       );
 
       const dto = BackgroundMapper.toFormat(bgNullDesc);
