@@ -9,7 +9,7 @@ import { BackgroundResponseDto } from "./dto/background-response.dto";
 @ApiTags("backgrounds")
 @Controller("backgrounds")
 export class BackgroundController {
-  logger = new Logger(BackgroundController.name);
+  private readonly logger = new Logger(BackgroundController.name);
 
   constructor(private readonly backgroundService: BackgroundService) {}
 
