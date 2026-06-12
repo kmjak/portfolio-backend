@@ -1,4 +1,0 @@
-pnpm lint
-pnpm format
-pnpm test
-pnpm test:e2e

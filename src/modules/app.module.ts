@@ -5,6 +5,7 @@ import { AchievementModule } from "src/modules/achievements/achievement.module";
 
 import { BackgroundModule } from "./background/background.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { ProjectModule } from "./projects/project.module";
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { PrismaModule } from "./prisma/prisma.module";
     PrismaModule,
     BackgroundModule,
     AchievementModule,
+    ProjectModule,
   ],
   controllers: [],
   providers: [],
