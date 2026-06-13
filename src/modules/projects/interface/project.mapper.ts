@@ -1,4 +1,4 @@
-import { Project } from "src/modules/projects/domain/project.entity";
+import { Project, ProjectSkillInfo } from "../domain/project.entity";
 
 import {
   ProjectDetailDto,
@@ -6,6 +6,7 @@ import {
   ProjectSkillDto,
 } from "./dto/project-detail-response.dto";
 import { ProjectResponseDto } from "./dto/project-response.dto";
+import { SkillResponseDto } from "./dto/skill-response.dto";
 
 export class ProjectMapper {
   static toFormat(project: Project): ProjectResponseDto {
@@ -24,6 +25,19 @@ export class ProjectMapper {
 
   static toFormats(projects: Project[]): ProjectResponseDto[] {
     return projects.map((project) => this.toFormat(project));
+  }
+
+  static toSkillFormats(skills: ProjectSkillInfo[]): SkillResponseDto[] {
+    return skills.map((skill) => ({
+      id: skill.id,
+      name: skill.name,
+      level: skill.level,
+      description: skill.description,
+      categories: skill.categories.map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+      })),
+    }));
   }
 
   static toDetailFormat(project: Project): ProjectDetailResponseDto {

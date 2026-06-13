@@ -1,10 +1,12 @@
 import { Controller, Get, Logger, Param, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { ProjectService } from "src/modules/projects/application/project.service";
-import { ProjectDetailResponseDto } from "src/modules/projects/interface/dto/project-detail-response.dto";
-import { ProjectResponseDto } from "src/modules/projects/interface/dto/project-response.dto";
-import { ProjectMapper } from "src/modules/projects/interface/project.mapper";
+import { ProjectService } from "../application/project.service";
+
+import { ProjectDetailResponseDto } from "./dto/project-detail-response.dto";
+import { ProjectResponseDto } from "./dto/project-response.dto";
+import { SkillResponseDto } from "./dto/skill-response.dto";
+import { ProjectMapper } from "./project.mapper";
 
 @ApiTags("projects")
 @Controller("projects")
@@ -25,6 +27,20 @@ export class ProjectController {
     this.logger.log(`Retrieved ${projects.length} projects.`);
 
     return ProjectMapper.toFormats(projects);
+  }
+
+  @Get("skills")
+  @ApiOperation({ summary: "全スキル取得" })
+  @ApiResponse({
+    status: 200,
+    description: "スキル一覧",
+  })
+  async findSkills(): Promise<SkillResponseDto[]> {
+    const skills = await this.projectService.findAllSkills();
+
+    this.logger.log(`Retrieved ${skills.length} skills.`);
+
+    return ProjectMapper.toSkillFormats(skills);
   }
 
   @Get("featured")

@@ -1,11 +1,11 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 
 import { UuidIdVo } from "src/domain/uuid-id.vo";
-import { Project } from "src/modules/projects/domain/project.entity";
+import { Project, ProjectSkillInfo } from "../domain/project.entity";
 import {
   IProjectRepository,
   PROJECT_REPOSITORY,
-} from "src/modules/projects/domain/project.repository.interface";
+} from "../domain/project.repository.interface";
 
 @Injectable()
 export class ProjectService {
@@ -15,6 +15,18 @@ export class ProjectService {
     @Inject(PROJECT_REPOSITORY)
     private readonly projectRepository: IProjectRepository
   ) {}
+
+  async findAllSkills(): Promise<ProjectSkillInfo[]> {
+    try {
+      return await this.projectRepository.findAllSkills();
+    } catch (error: unknown) {
+      const message = "Failed to retrieve skills";
+      this.logger.error(
+        `${message}: ${error instanceof Error ? error.stack : undefined}`
+      );
+      throw new Error(message);
+    }
+  }
 
   async findAll(): Promise<Project[]> {
     try {

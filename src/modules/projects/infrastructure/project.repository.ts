@@ -2,14 +2,50 @@ import { Injectable, Logger } from "@nestjs/common";
 
 import { UuidIdVo } from "src/domain/uuid-id.vo";
 import { PrismaService } from "src/modules/prisma/application/prisma.service";
-import { Project } from "src/modules/projects/domain/project.entity";
-import { IProjectRepository } from "src/modules/projects/domain/project.repository.interface";
+
+import { Project, ProjectSkillInfo } from "../domain/project.entity";
+import { IProjectRepository } from "../domain/project.repository.interface";
 
 @Injectable()
 export class ProjectRepository implements IProjectRepository {
   private readonly logger = new Logger(ProjectRepository.name);
 
   constructor(private readonly prisma: PrismaService) {}
+
+  async findAllSkills(): Promise<ProjectSkillInfo[]> {
+    try {
+      const skills = await this.prisma.skill.findMany({
+        include: {
+          categories: {
+            include: {
+              category: true,
+            },
+          },
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
+
+      return skills.map((skill) => ({
+        id: skill.id,
+        name: skill.name,
+        level: skill.level,
+        description: skill.description ?? undefined,
+        categories: skill.categories.map((catMap) => ({
+          id: catMap.category.id,
+          name: catMap.category.name,
+        })),
+      }));
+    } catch (error: unknown) {
+      this.logger.error(
+        `Failed to find all skills: ${
+          error instanceof Error ? error.stack : "unknown error"
+        }`
+      );
+      throw error;
+    }
+  }
 
   async findAll(): Promise<Project[]> {
     try {
