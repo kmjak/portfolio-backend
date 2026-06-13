@@ -45,7 +45,7 @@ export class ProjectRepository implements IProjectRepository {
   async findById(id: UuidIdVo): Promise<Project | null> {
     try {
       const project = await this.prisma.project.findUnique({
-        where: { id: id.value },
+        where: { id: id.getValue() },
       });
 
       if (!project) {
@@ -111,7 +111,7 @@ export class ProjectRepository implements IProjectRepository {
   async findByIdWithDetails(id: UuidIdVo): Promise<Project | null> {
     try {
       const project = await this.prisma.project.findUnique({
-        where: { id: id.value },
+        where: { id: id.getValue() },
         include: {
           detail: true,
           skills: {

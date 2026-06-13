@@ -1,16 +1,16 @@
 import { Project } from "src/modules/projects/domain/project.entity";
+
 import {
   ProjectDetailDto,
   ProjectDetailResponseDto,
   ProjectSkillDto,
-  TechCategoryDto,
 } from "./dto/project-detail-response.dto";
 import { ProjectResponseDto } from "./dto/project-response.dto";
 
 export class ProjectMapper {
   static toFormat(project: Project): ProjectResponseDto {
     return {
-      id: project.id.value,
+      id: project.id.getValue(),
       title: project.title.value,
       description: project.description.value,
       thumbnailUrl: project.thumbnailUrl,
@@ -43,17 +43,14 @@ export class ProjectMapper {
       name: skillInfo.name,
       level: skillInfo.level,
       description: skillInfo.description,
-      categories: skillInfo.categories.map(
-        (cat) =>
-          ({
-            id: cat.id,
-            name: cat.name,
-          }) as TechCategoryDto
-      ),
+      categories: skillInfo.categories.map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+      })),
     }));
 
     return {
-      id: project.id.value,
+      id: project.id.getValue(),
       title: project.title.value,
       description: project.description.value,
       thumbnailUrl: project.thumbnailUrl,

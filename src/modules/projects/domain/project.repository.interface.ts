@@ -1,4 +1,5 @@
 import { UuidIdVo } from "src/domain/uuid-id.vo";
+
 import { Project } from "./project.entity";
 
 export const PROJECT_REPOSITORY = "PROJECT_REPOSITORY";

@@ -1,4 +1,5 @@
 import { UuidIdVo } from "src/domain/uuid-id.vo";
+
 import { ProjectDescriptionVo } from "./project-description.vo";
 import { ProjectTitleVo } from "./project-title.vo";
 
